@@ -14,6 +14,7 @@ systemGroups = '/etc/group' #where the list of secondary groups are.
 groupName = "users" #the group who get fpm configs
 configTemplate = 'template.tpl' 
 outputDir = '/etc/fpm.d/' #requires trailing slash
+customConfigs = '/etc/fpm.d/custom/'
 
 def getUsers():
     users = []
@@ -26,8 +27,14 @@ def getUsers():
                 users.append(user.strip('\n'))
     return users
 
+def customConfig(user):
+    # checks if there is a custom configuration for a user.
+    if (os.path.isfile(customConfigs + user + ".tpl")):
+        return customConfigs + user + ".tpl"
+    return configTemplate
+
 def genConfig(user):
-    tpl = open(configTemplate,'r')
+    tpl = open(customConfig(user),'r')
     out = open(outputDir + user + ".conf",'w')
     for line in tpl:
         out.write(line.replace('%USER%',user))
