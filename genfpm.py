@@ -12,9 +12,9 @@ import os
 
 systemGroups = '/etc/group' #where the list of secondary groups are.
 groupName = "users" #the group who get fpm configs
-configTemplate = 'template.tpl' 
-outputDir = '/etc/fpm.d/' #requires trailing slash
-customConfigs = '/etc/fpm.d/custom/'
+configTemplate = 'templates/template.tpl' 
+outputDir = 'fpm-out/' #requires trailing slash
+customConfigs = 'templates/custom/'
 
 def getUsers():
     users = []
