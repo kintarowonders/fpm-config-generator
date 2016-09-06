@@ -1,4 +1,5 @@
 import os
+import config
 
 # PHP-FPM config generator by John Tate (johntate.org)
 # licenced under the MIT licence.
@@ -10,15 +11,9 @@ import os
 # This script runs on the production system Occulus Omega and works.
 #   http://occuomegawqtkl6j.onion/
 
-systemGroups = '/etc/group' #where the list of secondary groups are.
-groupName = "users" #the group who get fpm configs
-configTemplate = 'templates/template.tpl' 
-outputDir = 'fpm-out/' #requires trailing slash
-customConfigs = 'templates/custom/'
-
 def getUsers():
     users = []
-    f = open(systemGroups,'r')
+    f = open(config.systemGroups,'r')
     for line in f:
         splitted = line.split(':')
         if (splitted[0] == "users"):
@@ -29,21 +24,21 @@ def getUsers():
 
 def customConfig(user):
     # checks if there is a custom configuration for a user.
-    if (os.path.isfile(customConfigs + user + ".tpl")):
-        return customConfigs + user + ".tpl"
-    return configTemplate
+    if (os.path.isfile(config.customConfigs + user + ".tpl")):
+        return config.customConfigs + user + ".tpl"
+    return config.configTemplate
 
 def genConfig(user):
     tpl = open(customConfig(user),'r')
-    out = open(outputDir + user + ".conf",'w')
+    out = open(config.outputDir + user + ".conf",'w')
     for line in tpl:
         out.write(line.replace('%USER%',user))
 
-listConfig = os.listdir(outputDir)
+listConfig = os.listdir(config.outputDir)
 for configFile in listConfig:
     if (configFile.endswith(".conf")):
-        print("Removing file: " + outputDir + configFile)
-        os.remove(outputDir + configFile)
+        print("Removing file: " + config.outputDir + configFile)
+        os.remove(config.outputDir + configFile)
 
 users = getUsers()
 for user in users:
